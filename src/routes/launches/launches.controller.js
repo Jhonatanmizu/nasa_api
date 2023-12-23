@@ -20,6 +20,7 @@ httpPostLaunch = async (req, res) => {
     isInvalid = true;
     return res.status(400).send({ message: "Invalid launch" });
   }
+
   launch.launchDate = new Date(launch.launchDate);
   addNewLaunch(launch);
   res.status(201).send(launch);
