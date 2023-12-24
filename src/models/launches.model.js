@@ -26,7 +26,7 @@ const addNewLaunch = async (launch) => {
       newLaunch,
       { upsert: true }
     );
-    return result;
+    return newLaunch;
   } catch (error) {
     console.error("Error creating launch", error);
   }
@@ -34,7 +34,7 @@ const addNewLaunch = async (launch) => {
 
 const getLatestFlightNumber = async () => {
   const latestLaunch = await launchesModel.findOne().sort("-flightNumber");
-  return latestLaunch.flightNumber || 100;
+  return latestLaunch ? latestLaunch.flightNumber : 100;
 };
 
 const existsLaunchByFlightNumber = async (flightNumber) => {
