@@ -6,7 +6,8 @@ const {
 } = require("../../models/launches.model");
 
 httpGetAllLaunches = async (req, res) => {
-  res.status(200).send(getAllLaunches());
+  const launches = await getAllLaunches();
+  res.status(200).send(launches);
 };
 
 httpPostLaunch = async (req, res) => {
@@ -21,9 +22,9 @@ httpPostLaunch = async (req, res) => {
     return res.status(400).send({ message: "Invalid launch" });
   }
 
-  launch.launchDate = new Date(launch.launchDate);
-  addNewLaunch(launch);
-  res.status(201).send(launch);
+  launch.launchDate = new Date();
+  const result = await addNewLaunch(launch);
+  res.status(201).send(result);
 };
 
 httpDeleteLaunch = async (req, res) => {

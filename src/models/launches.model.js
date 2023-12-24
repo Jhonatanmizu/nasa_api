@@ -1,47 +1,51 @@
-const launches = new Map();
+const { launchesModel, planetsModel } = require("../db/schemas");
 
-let latestFlightNumber = 100;
-
-const launch = {
-  destination: "Kepler-442 b",
-  mission: "Kepler Exploration X",
-  rocket: "Explorer IS1",
-  launchDate: new Date("December 27, 2030"),
-  flightNumber: 100,
-  customers: ["Nasa", "MySpace"],
-  upcoming: true,
-  success: true,
+const getAllLaunches = async () => {
+  return await launchesModel.find({}, { _id: 0, __v: 0 });
 };
 
-launches.set(launch.flightNumber, launch);
-
-const getAllLaunches = () => {
-  return Array.from(launches.values());
-};
-
-const addNewLaunch = (launch) => {
-  latestFlightNumber++;
-  launches.set(
-    launch.flightNumber,
-    Object.assign(launch, {
-      upcoming: true,
+const addNewLaunch = async (launch) => {
+  try {
+    const newFlightNumber = (await getLatestFlightNumber()) + 1;
+    const newLaunch = Object.assign(launch, {
       success: true,
+      upcoming: true,
       customers: ["ZTM", "NASA"],
-      flightNumber: latestFlightNumber,
-    })
+      flightNumber: newFlightNumber,
+    });
+
+    const planet = await planetsModel.findOne({
+      keplerName: launch.target,
+    });
+
+    if (!planet) {
+      throw new Error("No matching planet has been found");
+    }
+    const result = await launchesModel.findOneAndUpdate(
+      { flightNumber: newFlightNumber },
+      newLaunch,
+      { upsert: true }
+    );
+    return result;
+  } catch (error) {
+    console.error("Error creating launch", error);
+  }
+};
+
+const getLatestFlightNumber = async () => {
+  const latestLaunch = await launchesModel.findOne().sort("-flightNumber");
+  return latestLaunch.flightNumber || 100;
+};
+
+const existsLaunchByFlightNumber = async (flightNumber) => {
+  return await launchesModel.findOne({ flightNumber });
+};
+
+const abortLaunchByFlightNumber = async (flightNumber) => {
+  return await launchesModel.updateOne(
+    { flightNumber },
+    { success: false, upcoming: false }
   );
-};
-
-const existsLaunchByFlightNumber = (flightNumber) => {
-  return launches.has(flightNumber);
-};
-
-const abortLaunchByFlightNumber = (flightNumber) => {
-  const aborted = launches.get(flightNumber);
-  aborted.upcoming = false;
-  aborted.success = false;
-  launches.set(flightNumber, aborted);
-  return aborted;
 };
 
 module.exports = {

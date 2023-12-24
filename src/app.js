@@ -10,7 +10,6 @@ app.use(cors());
 app.use(morgan("combined"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 // Planets
 app.use(planetsRouter);
 app.use(launchesRouter);
