@@ -13,7 +13,7 @@ describe("Launches Api", () => {
   describe("Test GET /launches", () => {
     test("It should respond with status 200 success", async () => {
       request(app)
-        .get("/launches")
+        .get("/v1/launches")
         .expect("Content-Type", /json/)
         .expect(200)
         .end((err, res) => {
@@ -39,7 +39,7 @@ describe("Launches Api", () => {
 
     test("It should respond with status 201 success", async () => {
       const response = await request(app)
-        .post("/launches")
+        .post("/v1/launches")
         .send(completeLaunchData)
         .expect("Content-Type", /json/)
         .expect(201);
@@ -47,7 +47,7 @@ describe("Launches Api", () => {
 
     test("It should catch missing required parameters", async () => {
       const response = await request(app)
-        .post("/launches")
+        .post("/v1/launches")
         .send(launchDataIncomplete)
         .expect("Content-Type", /json/)
         .expect(400);
