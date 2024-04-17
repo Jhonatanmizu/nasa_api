@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  db:
+    image: mongo
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
+    networks:
+      - server
+  app:
+    build: .
+    env_file:
+      - .env
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - "${PORT}:${PORT}"
+    networks:
+      - server
+networks:
+  server:
