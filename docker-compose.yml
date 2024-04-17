@@ -25,5 +25,7 @@ services:
       - "${PORT}:${PORT}"
     networks:
       - server
+    volumes:
+      - .:/usr/src/app
 networks:
   server:
