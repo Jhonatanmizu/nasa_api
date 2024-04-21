@@ -8,4 +8,6 @@ const planetsRouter = require("./planets/planets.router");
 api.use("/v1", planetsRouter);
 api.use("/v1", launchesRouter);
 
+api.get("/", (req, res) => res.send("Hello world!"));
+
 module.exports = api;
