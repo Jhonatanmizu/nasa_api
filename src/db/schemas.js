@@ -10,7 +10,7 @@ const launchSchema = new Schema({
     required: true,
   },
   target: {
-    required: true,
+    required: false,
     type: SchemaTypes.String,
   },
   customers: { type: SchemaTypes.Array, default: [] },
