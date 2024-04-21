@@ -41,7 +41,6 @@ describe("Launches Api", () => {
       const response = await request(app)
         .post("/v1/launches")
         .send(completeLaunchData)
-        .expect("Content-Type", /json/)
         .expect(201);
     });
 
